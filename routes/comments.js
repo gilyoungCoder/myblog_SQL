@@ -14,7 +14,8 @@ router.get("/:_postId", async (req, res) => {
       return;
     }
 
-    const comments = await Comment.findAll({ where: {postId: _id} }).sort({ createdAt: -1 });
+    let comments = await Comment.findAll({ where: {postId: _id} })
+    comments = comments.sort((a,b)=> b.createdAt-a.createdAt);
 
     let resultList = [];
 
@@ -40,7 +41,7 @@ router.post("/:_postId", authMiddleware, async (req, res) => {
   try {
     const _id = req.params._postId;
 
-    const { userId } = res.locals.user;
+    const { nickname } = res.locals.user;
     const content = req.body["content"];
 
     if (!content) { // TODO: Joi를 사용하지 않음
@@ -48,13 +49,13 @@ router.post("/:_postId", authMiddleware, async (req, res) => {
       return;
     }
 
-    if (!_id || !user || !password) { // TODO: Joi를 사용하지 않음
+    if (!_id || !nickname) { // TODO: Joi를 사용하지 않음
       res.status(400).json({ message: '데이터 형식이 올바르지 않습니다.' });
       return;
     }
 
 
-    await Comment.create({ postId: _id, user: userId, password, content });
+    await Comment.create({ postId: _id, user: nickname, content });
 
     res.status(201).json({ message: "댓글을 작성하였습니다." });
   } catch (error) {

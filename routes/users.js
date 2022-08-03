@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 const router = express.Router();
 const Joi = require("joi");
+const bcrypt = require('bcrypt');
+const salt = 10;
 
 const postUsersSchema = Joi.object({
     nickname: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,300}$')),
@@ -40,8 +42,9 @@ router.post("/signup", async (req, res) => {
             });
             return;
         }
-    
-        await User.create({ nickname, password });
+        
+        const hash = bcrypt.hashSync(password, salt);
+        await User.create({ nickname, password: hash, });
         res.status(201).send({
             "message": "회원 가입에 성공하였습니다."
         });
@@ -56,9 +59,9 @@ router.post("/signup", async (req, res) => {
   router.post("/login", async (req, res) => {
     const { nickname, password } = req.body;
   
-    const user = await User.findOne({ where: { nickname, password } });
+    const user = await User.findOne({ where: { nickname } });
   
-    if (!user) {
+    if (!user || !bcrypt.compareSync(password, user.password)) {
       res.status(400).send({
         errorMessage: "닉네임 또는 패스워드를 확인해주세요.",
       });

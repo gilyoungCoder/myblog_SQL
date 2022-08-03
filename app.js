@@ -9,10 +9,6 @@ const port = 3000;
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// 몽고 DB 및 Schema 설정
-// 몽고 DB의 스키마 설정시 index.js의 이름을 변경해선 안된다.
-const connect = require("./schemas");
-connect();
 
 app.use("/", routes);
 

@@ -19,6 +19,8 @@ router.get("/", async (req, res) => {
         user: post.user,
         title: post.title,
         createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        likes: post.likedBy.split(" ").length-1,
       });
     }
 
@@ -49,7 +51,7 @@ router.get("/like", authMiddleware, async (req, res) => {
       title: post.title,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
-      likes: post.likedBy.split(" ").length,
+      likes: post.likedBy.split(" ").length-1,
     }) ) });
   } catch (error) {
     const message = `${req.method} ${req.originalUrl} : ${error.message}`;
@@ -76,6 +78,8 @@ router.get("/:_postId", async (req, res) => {
       title: post.title,
       content: post.content,
       createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+      likes: post.likedBy.split(" ").length-1,
     };
 
     res.status(200).json({ data: result });
@@ -92,13 +96,14 @@ router.post("/", authMiddleware, async (req, res) => {
     const user = res.locals.user.nickname;
     const title = req.body["title"];
     const content = req.body["content"];
+    const likedBy = "";
 
     if (!user || !title || !content) { // TODO: Joi를 사용하지 않음
       res.status(400).json({ message: '데이터 형식이 올바르지 않습니다.' });
       return;
     }
 
-    await Post.create({ user, title, content });
+    await Post.create({ user, title, content, likedBy });
 
     res.status(201).json({ message: "게시글을 생성하였습니다." });
   } catch (error) {
@@ -146,7 +151,7 @@ router.put("/:_postId", authMiddleware, async (req, res) => {
 });
 
 // 게시글 좋아요
-router.put("/:_postId/like", authMiddleware, async (req, res) => {
+router.patch("/:_postId/like", authMiddleware, async (req, res) => {
   try {
     const id = req.params._postId;
     const { nickname } = res.locals.user;
@@ -162,7 +167,7 @@ router.put("/:_postId/like", authMiddleware, async (req, res) => {
     let i = 0;
     for (i = 0; i < likedList.length; i++) {
       if (likedList[i] === nickname) {
-        arr.splice(i, 1);
+        likedList.splice(i, 1);
         i--;
         break;
       }

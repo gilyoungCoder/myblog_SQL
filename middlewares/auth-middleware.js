@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
+
+//Authorization: Bearer JWT토큰내용 이렇게 들어옴
 module.exports = (req, res, next) => {
     const { authorization } = req.headers;
     const [tokenType, tokenValue] = (authorization|| "").split(' ');
