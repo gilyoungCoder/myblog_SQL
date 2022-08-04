@@ -1,1 +1,1 @@
-SELECT * FROM `node_blog`.`Users` LIMIT 1000;
+SELECT * FROM `node_blog`.`Posts` LIMIT 1000;

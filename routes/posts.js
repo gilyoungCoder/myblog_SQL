@@ -42,8 +42,7 @@ router.get("/like", authMiddleware, async (req, res) => {
     const likePost = isExist.filter((post) => post.likedBy
       .split(" ").includes(nickname))
       .sort((a, b) => b.likedBy.split(" ").length - a.likedBy.split(" ").length);
-    //???? 질문하기 이렇게 해도 됌? isExist.filter((post) => post.likedBy.split(" ").includes(nickname)).sort({ likedBy.split(" ").length: -1})
-
+    
     res.status(200).json({ data: likePost.map((post)=> ({
       postId: post.id,
       userId: post.user,
