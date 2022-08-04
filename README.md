@@ -24,3 +24,15 @@
 
 테스트시 로그인의 경우, 발급된 JWT 토큰을 req.header의 Authorization 에 넣어주었습니다.
 기본 포맷은 "Bearer ${jwt 토큰}" 입니다.
+
+
+<br/>
+
+<br/>
+
+<br/>
+
+## ERD
+
+
+![image](https://user-images.githubusercontent.com/65502423/182801819-ba86577c-bdf1-428a-a4f0-fd52db0177cc.png)
